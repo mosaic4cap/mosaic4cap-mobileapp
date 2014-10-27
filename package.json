@@ -22,6 +22,7 @@
     "grunt-contrib-sass": "*",
     "grunt-cordovacli": "*",
     "grunt-template-jasmine-istanbul": "*",
+	"grunt-open": "*",
     "load-grunt-tasks": "*",
     "time-grunt": "*"
   },

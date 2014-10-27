@@ -21,6 +21,7 @@ module.exports = function (grunt) {
             },
             build: {
                 coffee: 'www',
+                index: 'www',
                 vendor: 'www/vendor',
                 css: 'www/css'
             },
@@ -35,14 +36,11 @@ module.exports = function (grunt) {
                 "<%= meta.src.main.js %>/*.js.map",
                 "<%= meta.src.test %>/*.js",
                 "<%= meta.src.test %>/*.js.map",
-                "<%= meta.src.main.vendor %>"
+                "<%= meta.src.main.vendor %>",
+                "reports",
+                "_SpecRunner.html"
             ],
             build: [
-                "www/npm-debug.log",
-                "npm-debug.log",
-                "_SpecRunner.html",
-                "www",
-                "reports"
             ]
         },
 
@@ -187,18 +185,6 @@ module.exports = function (grunt) {
                     ]
                 }
             },
-/*            build_ios: {
-                options: {
-                    command: 'build',
-                    platforms: ['ios']
-                }
-            },
-            build_android: {
-                options: {
-                    command: 'build',
-                    platforms: ['android']
-                }
-            },*/
             run_android: {
                 options: {
                     command: 'run',
@@ -209,23 +195,45 @@ module.exports = function (grunt) {
             run_ios: {
                 options: {
                     command: 'run',
-                    platforms: ['ios'],
+                    platforms: ['ios']
                 }
+            }
+        },
+
+        connect: {
+            buildServer: {
+                options: {
+                    keepalive: true,
+                    port: 9000,
+                    base: '<%= meta.build.index %>'
+                }
+            }
+        },
+
+        open : {
+            build: {
+                path: 'http://127.0.0.1:9000/',
+                app: 'Google Chrome'
+            },
+            report: {
+                path: '<%= meta.bin.coverage %>/html/index.html',
+                app: 'Firefox'
             }
         }
     });
 
 
     /*grunt.registerTask('test', ['clean:test', 'bower:test', 'coffee:testsrc', 'coffee:test']);*/
-    grunt.registerTask('test', ['clean:test', 'bower:test', 'coffee:testsrc', 'coffee:test', 'jasmine']);
+    grunt.registerTask('test', ['clean:test', 'bower:test', 'coffee:testsrc', 'coffee:test', 'jasmine', 'open:report']);
 
     grunt.registerTask('build', ['clean:build', 'bower:build', 'coffee:build', 'htmlmin', 'sass']);
 
+    grunt.registerTask('dev', ['test', 'build', 'open:build', 'connect']);
+
     grunt.registerTask('cleanup', ['clean:test', 'clean:build']);
 
-    grunt.registerTask('server', ['cordovacli']);
+    grunt.registerTask('server', ['cordovacli', 'open:build', 'connect']);
 
-    //TODO: run cordova emulators via grunt
 
     grunt.registerTask('default', ['test', 'build', 'server']);
 };
