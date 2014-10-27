@@ -1,0 +1,30 @@
+{
+  "name": "Mosaic4Cap-Mobileapp",
+  "version": "0.0.1",
+  "description": "",
+  "main": "Gruntfile.js",
+  "directories": {
+    "test": "tests"
+  },
+  "scripts": {
+    "test": "grunt && grunt sigint"
+  },
+  "devDependencies": {
+    "grunt": "~0.4.2",
+    "grunt-contrib-clean": "*",
+    "grunt-contrib-jasmine": "*",
+    "grunt-contrib-htmlmin": "*",
+    "grunt-contrib-sass": "*",
+    "grunt-contrib-coffee": "*",
+    "grunt-contrib-copy": "*",
+    "grunt-contrib-connect": "*",
+    "grunt-template-jasmine-istanbul": "*",
+    "grunt-bower-task": "*",
+    "time-grunt": "*",
+    "load-grunt-tasks": "*",
+    "grunt-cordovacli": "*"
+  },
+  "dependencies": {
+  }
+}
+  

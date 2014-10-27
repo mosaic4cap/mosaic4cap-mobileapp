@@ -1,0 +1,21 @@
+{
+  "name": "Mosaic4Cap-Mobileapp",
+  "version": "0.0.1",
+  "private": true,
+  "ignore": [
+    "**/.*",
+    "node_modules",
+    "bower_components",
+    "test",
+    "tests"
+  ],
+  "dependencies": {
+    "jquery": "~2.1.1",
+    "jquery-mobile": "~1.4.4",
+    "angular": "~1.3.0",
+    "angular-route": "~1.3.0"
+  },
+  "resolutions": {
+    "jquery": "~2.1.1"
+  }
+}

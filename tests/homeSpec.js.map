@@ -1,0 +1,10 @@
+{
+  "version": 3,
+  "file": "homeSpec.js",
+  "sourceRoot": "",
+  "sources": [
+    "homeSpec.coffee"
+  ],
+  "names": [],
+  "mappings": "AAAA,QAAA,CAAS,SAAT,EAAoB,SAAA,GAAA;SAClB,EAAA,CAAG,mCAAH,EAAwC,SAAA,GAAA;WACtC,MAAA,CAAO,IAAP,CAAY,CAAC,IAAb,CAAkB,IAAlB,EADsC;EAAA,CAAxC,EADkB;AAAA,CAApB,CAAA,CAAA"
+}

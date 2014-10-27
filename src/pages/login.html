@@ -1,0 +1,11 @@
+<div class="mobile-centered">
+    <form>
+        <input type="text" name="text-basic" id="text-basic" value="Benutzername" ng-model="user.name">
+        <input type="password" name="password" id="password" value="Passwort" autocomplete="off" ng-model="user.pwd">
+
+        <button class="ui-btn ui-corner-all" ng-click="submit(user)">Anmelden</button>
+</div>
+
+<div>
+    <pre>{{user | json}}</pre>
+</div>

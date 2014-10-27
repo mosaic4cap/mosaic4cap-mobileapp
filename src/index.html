@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html ng-app="mosaic4cap">
+<head>
+
+    <meta charset="utf-8"/>
+    <!--
+        <meta name="format-detection" content="telephone=no"/>
+        <meta name="msapplication-tap-highlight" content="no"/>
+
+        <meta name="viewport"
+              content="user-scalable=no, initial-scale=1, maximum-scale=1, minimum-scale=1, width=device-width, height=device-height, target-densitydpi=device-dpi"/>
+    -->
+    <title>Hello World</title>
+
+
+    <!-- include styles -->
+    <link rel="stylesheet" type="text/css" href="../bower_components/font-awesome/css/font-awesome.min.css"/>
+    <link rel="stylesheet" type="text/css" href="../bower_components/jquery-mobile/css/themes/default/jquery.mobile.css" />
+
+    <link rel="stylesheet" type="text/css" href="css/index.css"/>
+    <link rel="stylesheet" type="text/css" href="css/main.css"/>
+
+
+    <!-- include javascript files -->
+    <script src="../bower_components/angular/angular.min.js"></script>
+    <script src="../bower_components/angular-route/angular-route.min.js"></script>
+    <script src="../bower_components/jquery/dist/jquery.min.js"></script>
+    <script src="../bower_components/jquery-mobile/js/jquery.mobile.js"></script>
+
+
+    <!-- include angularJS configuration files -->
+    <script src="js/mosaic4cap.js"></script>
+    <script src="js/mosaic4cap-routes.js"></script>
+    <script src="js/controller/mainController.js"></script>
+    <script src="js/controller/loginController.js"></script>
+
+</head>
+
+<body>
+
+<div ng-view></div>
+
+</body>
+</html>
