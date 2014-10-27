@@ -1,0 +1,7 @@
+# Created by .gitignore support plugin (hsz.mobi)
+mobileapp.iml
+www
+src/vendor
+plugins
+platforms
+node_modules
