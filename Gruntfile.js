@@ -219,12 +219,42 @@ module.exports = function (grunt) {
                 path: '<%= meta.bin.coverage %>/html/index.html',
                 app: 'Firefox'
             }
+        },
+
+        ftpush: {
+            build: {
+                auth: {
+                    host: 'svenklemmer.de',
+                    port: 21,
+                    authKey: 'spacequadrat'
+                },
+                src: '<%= meta.bin.coverage %>',
+                dest: '/',
+                /*exclusions: ['path/to/source/folder*//**//*.DS_Store', 'path/to/source/folder*//**//*Thumbs.db', 'dist/tmp'],*/
+                keep: ['/.ftpquota'],
+                simple: false,
+                useList: false
+            }
+        },
+
+        mailgun: {
+            mailer: {
+                options: {
+                    key: 'key-472c6b3605b830c401a2fb4edc6907e4',
+                    sender: 'reports@mosaic4cap.de',
+                    recipient: 'mosaic142@gmail.com',
+                    subject: 'Deployed Mosaic4Cap-Mobileapp reports',
+                    body: 'You can watch all report at http://svenklemmer.de/mosaic/html/'
+                }
+            }
         }
     });
 
 
     /*grunt.registerTask('test', ['clean:test', 'bower:test', 'coffee:testsrc', 'coffee:test']);*/
     grunt.registerTask('test', ['clean:test', 'bower:test', 'coffee:testsrc', 'coffee:test', 'jasmine', 'open:report']);
+
+    grunt.registerTask('testcity', ['clean:test', 'bower:test', 'coffee:testsrc', 'coffee:test', 'jasmine', 'ftpush', 'mailgun']);
 
     grunt.registerTask('build', ['clean:build', 'bower:build', 'coffee:build', 'htmlmin', 'sass']);
 

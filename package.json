@@ -23,6 +23,8 @@
     "grunt-cordovacli": "*",
     "grunt-template-jasmine-istanbul": "*",
 	"grunt-open": "*",
+"grunt-ftpush": "*",
+"grunt-mailgun": "*",
     "load-grunt-tasks": "*",
     "time-grunt": "*"
   },
