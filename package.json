@@ -10,23 +10,20 @@
     "test": "grunt && grunt sigint"
   },
   "devDependencies": {
-    "grunt": "~0.4.2",
-    "grunt-cli": "~0.1.13",
-
-    "grunt-contrib-clean": "*",
-    "grunt-contrib-jasmine": "*",
-    "grunt-contrib-htmlmin": "*",
-    "grunt-contrib-sass": "*",
-    "grunt-contrib-coffee": "*",
-    "grunt-contrib-copy": "*",
-    "grunt-contrib-connect": "*",
-    "grunt-template-jasmine-istanbul": "*",
+    "grunt": "^0.4.5",
     "grunt-bower-task": "*",
-    "time-grunt": "*",
+    "grunt-cli": "^0.1.13",
+    "grunt-contrib-clean": "*",
+    "grunt-contrib-coffee": "*",
+    "grunt-contrib-connect": "*",
+    "grunt-contrib-copy": "*",
+    "grunt-contrib-htmlmin": "*",
+    "grunt-contrib-jasmine": "*",
+    "grunt-contrib-sass": "*",
+    "grunt-cordovacli": "*",
+    "grunt-template-jasmine-istanbul": "*",
     "load-grunt-tasks": "*",
-    "grunt-cordovacli": "*"
+    "time-grunt": "*"
   },
-  "dependencies": {
-  }
+  "dependencies": {}
 }
-  
