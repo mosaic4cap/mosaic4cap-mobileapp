@@ -5,3 +5,10 @@ src/vendor
 plugins
 platforms
 node_modules
+reports
+jasmine.teamcity.log
+tests/*.js
+tests/*.js.map
+src/js/**/*.js
+src/js/**/*.js.map
+src/css/**/*.css

@@ -53,6 +53,10 @@ module.exports = function (grunt) {
                     specs: '<%= meta.src.test %>/*.js',
                     template: require('grunt-template-jasmine-istanbul'),
                     templateOptions: {
+                        template: require('grunt-template-jasmine-teamcity'),
+                        templateOptions: {
+                            output: '<%= meta.bin.coverage %>/html/jasmine.teamcity.log'
+                        },
                         coverage: '<%= meta.bin.coverage %>/coverage.json',
                         report: [
                             {
@@ -252,7 +256,16 @@ module.exports = function (grunt) {
     });
 
 
-    /*TODO: minify css and javascript in buildprocess*/
+    /**
+     * TODO: minify css and javascript in buildprocess
+     * see https://github.com/gruntjs/grunt-contrib-uglify for javascript
+     * see https://github.com/gruntjs/grunt-contrib-cssmin for css
+     */
+
+    /**
+     * TODO: make another template for grunt-jasmine task to produce a report containing test run report and coverage report
+     * see https://github.com/gruntjs/grunt-contrib-jasmine/wiki/Jasmine-Templates for template hints
+     */
 
     /*grunt.registerTask('test', ['clean:test', 'bower:test', 'coffee:testsrc', 'coffee:test']);*/
     grunt.registerTask('test', ['clean:test', 'bower:test', 'coffee:testsrc', 'coffee:test', 'jasmine', 'open:report']);

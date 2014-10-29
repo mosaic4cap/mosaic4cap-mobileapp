@@ -21,6 +21,7 @@
     "grunt-contrib-jasmine": "*",
     "grunt-contrib-sass": "*",
     "grunt-cordovacli": "*",
+"grunt-template-jasmine-teamcity": "*",
     "grunt-template-jasmine-istanbul": "*",
 	"grunt-open": "*",
 "grunt-ftpush": "*",
