@@ -28,6 +28,13 @@ module.exports = function (grunt) {
             },
             bin: {
                 coverage: 'reports/coverage'
+            },
+            apk: {
+                ios: 'platforms/ios/build/HelloCordova.build',
+                android: 'platforms/android/ant-build/',
+                wmp8: '',
+                firefox: '',
+                platforms: 'platforms/'
             }
         },
 
@@ -42,7 +49,8 @@ module.exports = function (grunt) {
                 "_SpecRunner.html"
             ],
             build: [
-                "<%= meta.build.html %>"
+                "<%= meta.build.html %>",
+                "<%= meta.apk.platforms %>"
             ]
         },
 
@@ -167,12 +175,19 @@ module.exports = function (grunt) {
             },
             cordova: {
                 options: {
-                    command: ['plugin','build'],
-                    platforms: ['ios','android'],
+                    command: ['plugin', 'build'],
+                    platforms: ['ios', 'android'],
                     plugins: [],
                     path: './',
                     id: 'io.cordova.hellocordova',
                     name: 'HelloCordova'
+                }
+            },
+            add_platforms: {
+                options: {
+                    command: 'platform',
+                    action: 'add',
+                    platforms: ['ios', 'android']
                 }
             },
             add_plugins: {
@@ -190,11 +205,25 @@ module.exports = function (grunt) {
                     ]
                 }
             },
+            build_android_release: {
+                options: {
+                    command: 'build',
+                    platforms: ['android'],
+                    args: ['--release']
+                }
+            },
+            build_ios_release: {
+                options: {
+                    command: 'build',
+                    platforms: ['ios'],
+                    args: ['--release']
+                }
+            },
             run_android: {
                 options: {
                     command: 'run',
                     platforms: ['android'],
-                    args: ['--target','myAndroid']
+                    args: ['--target', 'myAndroid']
                 }
             },
             run_ios: {
@@ -215,7 +244,7 @@ module.exports = function (grunt) {
             }
         },
 
-        open : {
+        open: {
             build: {
                 path: 'http://127.0.0.1:9000/',
                 app: 'Google Chrome'
@@ -239,17 +268,65 @@ module.exports = function (grunt) {
                 keep: ['/.ftpquota'],
                 simple: false,
                 useList: false
+            },
+
+            /** change destination packages to release directory in app **/
+            deploy_ios: {
+                auth: {
+                    host: 'svenklemmer.de',
+                    port: 21,
+                    authKey: 'spacequadrat'
+                },
+                src: '<%= meta.apk.ios %>',
+                dest: '/testrelease',
+                /*exclusions: ['path/to/source/folder*//**//*.DS_Store', 'path/to/source/folder*//**//*Thumbs.db', 'dist/tmp'],*/
+                /*keep: ['/.ftpquota'],*/
+                simple: false,
+                useList: false
+            },
+
+            /** change destination packages to release directory in app **/
+            deploy_android: {
+                auth: {
+                    host: 'svenklemmer.de',
+                    port: 21,
+                    authKey: 'spacequadrat'
+                },
+                src: '<%= meta.apk.android %>',
+                dest: '/testrelease',
+                keep: ['<%= meta.apk.android %>/**/*', '<%= meta.apk.android %>/*.xml*', '<%= meta.apk.android %>/*.dex*', '<%= meta.apk.android %>/*.txt'],
+                /*keep: ['/.ftpquota'],*/
+                simple: false,
+                useList: false
             }
         },
 
         mailgun: {
-            mailer: {
+            jasmine_mailer: {
                 options: {
                     key: 'key-472c6b3605b830c401a2fb4edc6907e4',
                     sender: 'reports@mosaic4cap.de',
                     recipient: 'mosaic142@gmail.com',
                     subject: 'Deployed Mosaic4Cap-Mobileapp reports',
                     body: 'Teamcity build successfull! You can watch all reports at http://svenklemmer.de/mosaic/html/'
+                }
+            },
+            release_mailer_ios: {
+                options: {
+                    key: 'key-472c6b3605b830c401a2fb4edc6907e4',
+                    sender: 'reports@mosaic4cap.de',
+                    recipient: 'mosaic142@gmail.com',
+                    subject: 'Deployed Mosaic4Cap-Mobileapp for iOS',
+                    body: 'Successfully Deployed iOS App, watch release @ Mosaic4Cap Page'
+                }
+            },
+            release_mailer_android: {
+                options: {
+                    key: 'key-472c6b3605b830c401a2fb4edc6907e4',
+                    sender: 'reports@mosaic4cap.de',
+                    recipient: 'mosaic142@gmail.com',
+                    subject: 'Deployed Mosaic4Cap-Mobileapp for Android',
+                    body: 'Successfully Deployed Android App, watch release @ Mosaic4Cap Page'
                 }
             }
         }
@@ -267,18 +344,31 @@ module.exports = function (grunt) {
      * see https://github.com/gruntjs/grunt-contrib-jasmine/wiki/Jasmine-Templates for template hints
      */
 
+    /**
+     * TODO: for deploying apps use deploy_<platform> and build_<platform>_release tasks
+     * first copy .apk or ios build to seperate folder and upload it to server
+     * make folder for every release
+     * REMEBER: ftpush will delete all direcoties so try to keep all existing dirs on ftp folder
+     * send mail after upload finished
+     */
+
     /*grunt.registerTask('test', ['clean:test', 'bower:test', 'coffee:testsrc', 'coffee:test']);*/
-    grunt.registerTask('test', ['clean:test', 'bower:test', 'coffee:testsrc', 'coffee:test', 'jasmine', 'open:report']);
-
-    grunt.registerTask('testcity', ['clean:test', 'bower:test', 'coffee:testsrc', 'coffee:test', 'jasmine', 'ftpush', 'mailgun']);
-
-    grunt.registerTask('build', ['clean:build', 'bower:build', 'coffee:build', 'htmlmin', 'sass']);
-
-    grunt.registerTask('dev', ['test', 'build', 'open:build', 'connect']);
-
     grunt.registerTask('cleanup', ['clean:test', 'clean:build']);
 
-    grunt.registerTask('server', ['cordovacli', 'open:build', 'connect']);
+
+    grunt.registerTask('test', ['clean:test', 'bower:test', 'coffee:testsrc', 'coffee:test', 'jasmine', 'open:report']);
+    grunt.registerTask('testcity', ['clean:test', 'bower:test', 'coffee:testsrc', 'coffee:test', 'jasmine', 'ftpush', 'mailgun:jasmine_mailer']);
+
+    grunt.registerTask('build', ['clean:build', 'bower:build', 'coffee:build', 'htmlmin', 'sass', 'cordovabuild']);
+    grunt.registerTask('cordovabuild', ['cordovacli:add_platforms', 'cordovacli:add_plugins', 'cordovacli:cordova']);
+
+
+    grunt.registerTask('server', ['open:build', 'connect']);
+
+
+    grunt.registerTask('dev', ['test', 'build', 'open:build', 'connect']);
+    grunt.registerTask('deploy', ['test', 'build', 'cordovacli:build_android_release', 'ftpush:deploy_android', 'mailgun:release_mailer_android',
+        'cordovacli:build_ios_release', 'ftpush:deploy_ios', 'mailgun:release_mailer_ios']);
 
 
     grunt.registerTask('default', ['test', 'build', 'server']);
