@@ -20,10 +20,11 @@ module.exports = function (grunt) {
                 test: 'tests'
             },
             build: {
-                coffee: 'www',
-                index: 'www',
-                vendor: 'www/vendor',
-                css: 'www/css'
+                html: "www/",
+                js: "www/js",
+                css: "www/css",
+                img: "www/img",
+                vendor: "www/vendor"
             },
             bin: {
                 coverage: 'reports/coverage'
@@ -32,15 +33,16 @@ module.exports = function (grunt) {
 
         clean: {
             test: [
-                "<%= meta.src.main.js %>/*.js",
-                "<%= meta.src.main.js %>/*.js.map",
-                "<%= meta.src.test %>/*.js",
-                "<%= meta.src.test %>/*.js.map",
+                "<%= meta.src.main.js %>/**/*.js",
+                "<%= meta.src.main.js %>/**/*.js.map",
+                "<%= meta.src.test %>/**/*.js",
+                "<%= meta.src.test %>/**/*.js.map",
                 "<%= meta.src.main.vendor %>",
                 "reports",
                 "_SpecRunner.html"
             ],
             build: [
+                "<%= meta.build.html %>"
             ]
         },
 
@@ -99,13 +101,12 @@ module.exports = function (grunt) {
             build: {
                 options: {
                     bare: true,
-                    sourceMap: true,
-                    joined: true
+                    sourceMap: true
                 },
                 expand: true,
                 cwd: '<%= meta.src.main.js %>',
-                src: ['*.coffee'],
-                dest: '<%= meta.build.coffee %>',
+                src: ['**/*.coffee'],
+                dest: '<%= meta.build.js %>',
                 ext: '.js'
             },
 
@@ -244,12 +245,14 @@ module.exports = function (grunt) {
                     sender: 'reports@mosaic4cap.de',
                     recipient: 'mosaic142@gmail.com',
                     subject: 'Deployed Mosaic4Cap-Mobileapp reports',
-                    body: 'You can watch all report at http://svenklemmer.de/mosaic/html/'
+                    body: 'Teamcity build successfull! You can watch all reports at http://svenklemmer.de/mosaic/html/'
                 }
             }
         }
     });
 
+
+    /*TODO: minify css and javascript in buildprocess*/
 
     /*grunt.registerTask('test', ['clean:test', 'bower:test', 'coffee:testsrc', 'coffee:test']);*/
     grunt.registerTask('test', ['clean:test', 'bower:test', 'coffee:testsrc', 'coffee:test', 'jasmine', 'open:report']);
