@@ -40,10 +40,12 @@ module.exports = function (grunt) {
 
         clean: {
             test: [
-                "<%= meta.src.main.js %>/**/*.js",
-                "<%= meta.src.main.js %>/**/*.js.map",
                 "<%= meta.src.test %>/**/*.js",
                 "<%= meta.src.test %>/**/*.js.map",
+                "<%= meta.src.main.js %>/**/*.js",
+                "<%= meta.src.main.js %>/**/*.js.map",
+                "<%= meta.src.main.css %>/**/*.css",
+                "<%= meta.src.main.css %>/**/*.css.map",
                 "<%= meta.src.main.vendor %>",
                 "reports",
                 "_SpecRunner.html"
@@ -144,11 +146,23 @@ module.exports = function (grunt) {
         },
 
         sass: {
-            dist: {
+            build: {
                 files: [{
                     expand: true,
-                    cwd: 'styles',
-                    src: ['<%= meta.src.main.css %>/*.scss'],
+                    cwd: '<%= meta.src.main.css %>',
+                    src: ['**/*.sass'],
+                    dest: '<%= meta.build.css %>',
+                    ext: '.css'
+                }]
+            }
+        },
+
+        cssmin: {
+            build: {
+                files: [{
+                    expand: true,
+                    cwd: '<%= meta.build.css %>',
+                    src: ['*.css', '!*.min.css'],
                     dest: '<%= meta.build.css %>',
                     ext: '.css'
                 }]
@@ -156,16 +170,29 @@ module.exports = function (grunt) {
         },
 
         htmlmin: {                                     // Task
-            dist: {                                      // Target
+            build: {                                      // Target
                 options: {                                 // Target options
                     removeComments: true,
-                    collapseWhitespace: true
+                    collapseWhitespace: true,
+                    minifyJS: true,
+                    minifyCSS: true
                 },
                 files: {                                   // Dictionary of files
                     'www/index.html': '<%= meta.src.main.html %>/index.html',     // 'destination': 'source'
                     'www/pages/login.html': '<%= meta.src.main.html %>/pages/login.html',
                     'www/pages/main.html': '<%= meta.src.main.html %>/pages/main.html'
                 }
+            }
+        },
+
+        uglify: {
+            build: {
+                files: [{
+                    expand: true,
+                    cwd: '<%= meta.build.js %>',
+                    src: '**/*.js',
+                    dest: '<%= meta.build.js %>'
+                }]
             }
         },
 
@@ -256,7 +283,7 @@ module.exports = function (grunt) {
         },
 
         ftpush: {
-            build: {
+            report: {
                 auth: {
                     host: 'svenklemmer.de',
                     port: 21,
@@ -334,12 +361,6 @@ module.exports = function (grunt) {
 
 
     /**
-     * TODO: minify css and javascript in buildprocess
-     * see https://github.com/gruntjs/grunt-contrib-uglify for javascript
-     * see https://github.com/gruntjs/grunt-contrib-cssmin for css
-     */
-
-    /**
      * TODO: make another template for grunt-jasmine task to produce a report containing test run report and coverage report
      * see https://github.com/gruntjs/grunt-contrib-jasmine/wiki/Jasmine-Templates for template hints
      */
@@ -357,18 +378,38 @@ module.exports = function (grunt) {
 
 
     grunt.registerTask('test', ['clean:test', 'bower:test', 'coffee:testsrc', 'coffee:test', 'jasmine', 'open:report']);
-    grunt.registerTask('testcity', ['clean:test', 'bower:test', 'coffee:testsrc', 'coffee:test', 'jasmine', 'ftpush', 'mailgun:jasmine_mailer']);
+    grunt.registerTask('testcity', [
+        'clean:test',
+        'bower:test',
+        'coffee:testsrc',
+        'coffee:test',
+        'jasmine',
+        'ftpush:report',
+        'mailgun:jasmine_mailer'
+    ]);
 
-    grunt.registerTask('build', ['clean:build', 'bower:build', 'coffee:build', 'htmlmin', 'sass', 'cordovabuild']);
-    grunt.registerTask('cordovabuild', ['cordovacli:add_platforms', 'cordovacli:add_plugins', 'cordovacli:cordova']);
+    grunt.registerTask('build', ['clean:build', 'html', 'js', 'css', 'app']);
+
+
+    grunt.registerTask('html', ['bower:build', 'htmlmin:build']);
+    grunt.registerTask('css', ['sass:build', 'cssmin:build']);
+    grunt.registerTask('js', ['coffee:build', 'uglify:build']);
+    grunt.registerTask('app', ['cordovacli:add_platforms', 'cordovacli:add_plugins', 'cordovacli:cordova']);
 
 
     grunt.registerTask('server', ['open:build', 'connect']);
 
-
     grunt.registerTask('dev', ['test', 'build', 'open:build', 'connect']);
-    grunt.registerTask('deploy', ['test', 'build', 'cordovacli:build_android_release', 'ftpush:deploy_android', 'mailgun:release_mailer_android',
-        'cordovacli:build_ios_release', 'ftpush:deploy_ios', 'mailgun:release_mailer_ios']);
+    grunt.registerTask('deploy', [
+        'test',
+        'build',
+        'cordovacli:build_android_release',
+        'ftpush:deploy_android',
+        'mailgun:release_mailer_android',
+        'cordovacli:build_ios_release',
+        'ftpush:deploy_ios',
+        'mailgun:release_mailer_ios'
+    ]);
 
 
     grunt.registerTask('default', ['test', 'build', 'server']);
