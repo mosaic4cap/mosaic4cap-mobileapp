@@ -13,3 +13,4 @@ src/js/**/*.js
 src/js/**/*.js.map
 src/css/**/*.css
 src/css/**/*.css.map
+_SpecRunner.html

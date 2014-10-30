@@ -17,7 +17,7 @@ module.exports = function (grunt) {
                     img: "src/img",
                     vendor: "src/vendor"
                 },
-                test: 'tests'
+                test: 'tests/'
             },
             build: {
                 html: "www/",
@@ -40,6 +40,14 @@ module.exports = function (grunt) {
 
         clean: {
             test: [
+                "<%= meta.src.main.vendor %>",
+                "reports",
+                "_SpecRunner.html",
+                ".grunt",
+                ".sass-cache",
+                "jasmine.teamcity.log"
+            ],
+            test2: [
                 "<%= meta.src.test %>/**/*.js",
                 "<%= meta.src.test %>/**/*.js.map",
                 "<%= meta.src.main.js %>/**/*.js",
@@ -58,15 +66,22 @@ module.exports = function (grunt) {
 
         jasmine: {
             coverage: {
-                src: ['<%= meta.src.main.js %>/*.js'],
+                src: ['<%= meta.src.main.js %>/**/*.js'],
                 options: {
-                    specs: '<%= meta.src.test %>/*.js',
+                    keepRunner: true,
+                    specs: '<%= meta.src.test %>/**/*.js',
+                    vendor: [
+                         /*'<%= meta.src.main.vendor %>/angular-scenario/angular-scenario.js'*/
+                        '<%= meta.src.main.vendor %>/angular/angular.js',
+                        '<%= meta.src.main.vendor %>/angular-route/angular-route.js',
+                        '<%= meta.src.main.vendor %>/angular-mocks/angular-mocks.js'
+                    ],
                     template: require('grunt-template-jasmine-istanbul'),
                     templateOptions: {
-                        template: require('grunt-template-jasmine-teamcity'),
+/*                        template: require('grunt-template-jasmine-teamcity'),
                         templateOptions: {
                             output: '<%= meta.bin.coverage %>/html/jasmine.teamcity.log'
-                        },
+                        },*/
                         coverage: '<%= meta.bin.coverage %>/coverage.json',
                         report: [
                             {
@@ -97,6 +112,8 @@ module.exports = function (grunt) {
                     cleanBowerDir: true,
                     install: true,
                     copy: true,
+                    /*verbose: true,*/
+                    layout: 'byComponent',
                     targetDir: "<%= meta.src.main.vendor %>"
                 }
             },
@@ -106,6 +123,7 @@ module.exports = function (grunt) {
                     cleanBowerDir: true,
                     install: true,
                     copy: true,
+                    layout: 'byComponent',
                     targetDir: "<%= meta.build.vendor %>"
                 }
             }
@@ -179,14 +197,18 @@ module.exports = function (grunt) {
                 },
                 files: {                                   // Dictionary of files
                     'www/index.html': '<%= meta.src.main.html %>/index.html',     // 'destination': 'source'
+                    'www/pages/main.html': '<%= meta.src.main.html %>/pages/main.html',
                     'www/pages/login.html': '<%= meta.src.main.html %>/pages/login.html',
-                    'www/pages/main.html': '<%= meta.src.main.html %>/pages/main.html'
+                    'www/pages/invoice.html': '<%= meta.src.main.html %>/pages/invoice.html'
                 }
             }
         },
 
         uglify: {
             build: {
+                options: {
+                    mangle: false
+                },
                 files: [{
                     expand: true,
                     cwd: '<%= meta.build.js %>',
@@ -273,12 +295,17 @@ module.exports = function (grunt) {
 
         open: {
             build: {
-                path: 'http://127.0.0.1:9000/',
+                path: 'http://127.0.0.1:9000/www',
                 app: 'Google Chrome'
             },
             report: {
                 path: '<%= meta.bin.coverage %>/html/index.html',
-                app: 'Firefox'
+                app: 'Google Chrome'
+                /*app: 'Firefox'*/
+            },
+            specRunner: {
+                path: '_SpecRunner.html',
+                app: 'Google Chrome'
             }
         },
 
@@ -362,6 +389,7 @@ module.exports = function (grunt) {
 
     /**
      * TODO: make another template for grunt-jasmine task to produce a report containing test run report and coverage report
+     * maybe use _SpecRunner.html and modifiy it to a report
      * see https://github.com/gruntjs/grunt-contrib-jasmine/wiki/Jasmine-Templates for template hints
      */
 
@@ -377,7 +405,7 @@ module.exports = function (grunt) {
     grunt.registerTask('cleanup', ['clean:test', 'clean:build']);
 
 
-    grunt.registerTask('test', ['clean:test', 'bower:test', 'coffee:testsrc', 'coffee:test', 'jasmine', 'open:report']);
+    grunt.registerTask('test', ['clean:test', 'bower:test', 'coffee:testsrc', 'coffee:test', 'jasmine', 'open:report', 'open:specRunner']);
     grunt.registerTask('testcity', [
         'clean:test',
         'bower:test',
@@ -388,7 +416,7 @@ module.exports = function (grunt) {
         'mailgun:jasmine_mailer'
     ]);
 
-    grunt.registerTask('build', ['clean:build', 'html', 'js', 'css', 'app']);
+    grunt.registerTask('build', ['clean:build', 'html', 'js', 'css']);
 
 
     grunt.registerTask('html', ['bower:build', 'htmlmin:build']);
@@ -403,6 +431,7 @@ module.exports = function (grunt) {
     grunt.registerTask('deploy', [
         'test',
         'build',
+        'app',
         'cordovacli:build_android_release',
         'ftpush:deploy_android',
         'mailgun:release_mailer_android',
